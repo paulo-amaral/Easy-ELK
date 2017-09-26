@@ -74,10 +74,10 @@ install_elasticsearch() {
   wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
   #update apt sources list
   echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-5.x.list
-  sudo apt-get update && sudo apt-get install -y elasticsearch
+  apt-get update && apt-get install -y elasticsearch
           #Elasticsearch is not started automatically after installation 
-          cmd='command -v systemctl'
-          if [[ $cmd > /dev/null ]] ; then
+          CMD=$(command -v systemctl)
+          if [ $CMD > /dev/null ] ; then
                systemctl daemon-reload
                systemctl enable elasticsearch.service
           else
