@@ -1,2 +1,2 @@
 # Shell Script to install ELK on Debian
-INSTALL KIBANA+ELASTIXSEARCH+LOGSTASH - Elastic Stack on Debian
+INSTALL KIBANA+ELASTICSEARCH+LOGSTASH - Elastic Stack on Debian
