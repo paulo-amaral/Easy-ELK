@@ -3,7 +3,7 @@
 #
 # This script is used to install ELK STACK
 #Elasticsearch requires Java 8 or later. Use the official Oracle distribution or an open-source distribution such as OpenJDK.
-MYDOMAIN="mp.tl"
+MYDOMAIN="mydomain"
 
 
 #Verify running as root:
