@@ -5,7 +5,7 @@
 #Author : Paulo Amaral 
 
 
-MYDOMAIN="mp.tl"
+MYDOMAIN="mydomain"
 
 
 #Verify running as root:
