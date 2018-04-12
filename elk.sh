@@ -1,6 +1,6 @@
 
 #!/bin/bash
-#This script is used to install ELK STACK and mao database GeoLite2
+#This script is used to install ELK STACK and map database GeoLite2
 #Elasticsearch requires Java 8 or later. Use the official Oracle distribution or an open-source distribution such as OpenJDK.
 #Author : Paulo Amaral 
 
