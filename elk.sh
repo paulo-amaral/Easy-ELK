@@ -5,7 +5,8 @@
 #Author : Paulo Amaral 
 
 
-MYDOMAIN="mydomain"
+#Get domain name
+MYDOMAIN=$(hostname -d)
 
 
 #Verify running as root:
