@@ -240,6 +240,7 @@ if [ $? != 0 ]; then
 fi
 }
 
+
 check_user
 update_system_packages
 check_apache2
