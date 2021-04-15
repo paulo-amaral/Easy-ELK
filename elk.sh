@@ -105,7 +105,6 @@ configure_elasticsearch() {
     #APPEND TO JVM CONFIGURATION FILE - Configure heap size
     echo "-Xms4g" >> /etc/elasticsearch/jvm.options
     echo "-Xmx4g" >> /etc/elasticsearch/jvm.options
-    
     echo "$(tput setaf 1) ---- starting elasticsearch ----"
     #start service
     CMD=$(command -v systemctl)
@@ -146,6 +145,8 @@ install_kibana() {
     sed -i "/server.host/aserver.host: ${IP}"  /etc/kibana/kibana.yml
     #Elastic url
     sed -i '/elasticsearch.url:/s/^#//g' /etc/kibana/kibana.yml
+    #hosts
+    echo -e 'elasticsearch.hosts: ["http://localhost:9200"]' >> /etc/kibana/kibana.yml
     #start kibana
     echo -n "Updating start daemon Kibana \n"
     echo    "---------------------------"
