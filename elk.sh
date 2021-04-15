@@ -41,6 +41,7 @@ check_apache2() {
 }
 
 #check if java installed
+#ELK deployment requires that Java 8 or 11 is installed. Run the below commands to install OpenJDK 11
 check_java() {
     clear
     echo -n "checking if java is installed \n"
@@ -67,9 +68,12 @@ install_elasticsearch() {
     echo -n "Installing elasticsearch \n"
     echo    "---------------------------"
     #import PGP key
+    echo "$(tput setaf 1) ---- Setting up public signing key ----"
     wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
     #update apt sources list
-    echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-5.x.list
+    echo "$(tput setaf 1) ---- Saving Repository Definition to /etc/apt/sources/list.d/elastic-7.x.list ----"
+    echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list
+    echo "$(tput setaf 1) ---- Installing the Elasticsearch Debian Package ----"
     apt-get update && apt-get install -y elasticsearch
     #Elasticsearch is not started automatically after installation
     echo -n "Updating start daemon \n"
@@ -98,13 +102,19 @@ configure_elasticsearch() {
     sed -i '/LimitMEMLOCK=/s/^#//g' /usr/lib/systemd/system/elasticsearch.service
     #MAX_LOCKED_MEMORY=unlimited
     sed -i '/MAX_LOCKED_MEMORY=/s/^#//g' /etc/default/elasticsearch
+    echo "$(tput setaf 1) ---- starting elasticsearch ----"
     #start service
-    systemctl daemon-reload
-    echo -n "Starting Service elasticsearch \n"
-    echo    "------------------------------"
-    service elasticsearch start  
+    CMD=$(command -v systemctl)
+    if [ $CMD > /dev/null ] ; then
+        systemctl daemon-reload
+        systemctl enable --now elasticsearch
+    else
+        update-rc.d elasticsearch defaults 95 10
+        service elasticsearch start
+    fi
     sleep 60
     #check if service is running
+    echo "$(tput setaf 1) ---- check if elasticsearch is running ----"
     SVC='elasticsearch'
     if ps ax | grep -v grep | grep $SVC > /dev/null ; then
         echo "Elasticsearch service is running"
@@ -113,7 +123,6 @@ configure_elasticsearch() {
         exit 1
     fi
 }
-
 
 #Install and Configure Kibana with Apache2
 install_kibana() {
@@ -124,6 +133,7 @@ install_kibana() {
     IP=$(ip addr show |grep "inet " |grep -v 127.0.0. |head -1|cut -d" " -f6|cut -d/ -f1)
     #install package
     apt-get install -y kibana
+    echo "$(tput setaf 1) ---- Setting up public signing key ----"
     cd /etc/kibana || exit
     #server.port: 5601
     sed -i "/server.port:/s/^#//g" /etc/kibana/kibana.yml
@@ -138,17 +148,17 @@ install_kibana() {
     CMD=$(command -v systemctl)
     if [ $CMD > /dev/null ] ; then
         systemctl daemon-reload
-        systemctl enable kibana.service
-        systemctl start kibana.service
+        systemctl enable --now kibana.service
     else
         update-rc.d kibana defaults 95 10
         service kibana start
     fi
     #enable Kibana mod proxy
+    echo "$(tput setaf 1) ---- Enabling Kibana mod proxy ----"
     a2enmod proxy
     a2enmod proxy_http
     a2enmod rewrite && /etc/init.d/apache2 restart
-        
+      
 }
 
 
