@@ -246,7 +246,7 @@ update_system_packages
 check_apache2
 check_java
 install_elasticsearch
-configure_elasticsearch #parei aqui
+configure_elasticsearch 
 install_kibana
 configure_kibana
 install_logstash
