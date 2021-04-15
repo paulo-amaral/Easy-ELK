@@ -102,6 +102,10 @@ configure_elasticsearch() {
     sed -i '/LimitMEMLOCK=/s/^#//g' /usr/lib/systemd/system/elasticsearch.service
     #MAX_LOCKED_MEMORY=unlimited
     sed -i '/MAX_LOCKED_MEMORY=/s/^#//g' /etc/default/elasticsearch
+    #APPEND TO JVM CONFIGURATION FILE - Configure heap size
+    echo "-Xms4g" >> /etc/elasticsearch/jvm.options
+    echo "-Xmx4g" >> /etc/elasticsearch/jvm.options
+    
     echo "$(tput setaf 1) ---- starting elasticsearch ----"
     #start service
     CMD=$(command -v systemctl)
