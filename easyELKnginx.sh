@@ -4,9 +4,11 @@
 #Author : Paulo Amaral 
 #Email :  paulo.security@gmail.com
 
-#Get domain name
-MYDOMAIN=$(hostname -d)
+#Get hostname and domain name
+HOSTNAME=$(uname -n)
 
+#Get Debian version
+VERSION=$(lsb_release --codename --short)
 
 #Verify running as root:
 check_user() {
@@ -21,44 +23,55 @@ fi
 
 #Update system packages
 update_system_packages() {
-    echo -n "Updating Packages \n"
-    echo "-----------------------------------------"
-    apt-get -y update
+    printf "\033[32m Updating packages and install dependencies\033[0m\n"
+    echo "-----------------------------------------------------"
+    apt -y update
+    apt install -y  software-properties-common wget curl software-properties-common apt-transport-https
 }
+
+#Be sure you have GNUPG installed.
+check_gnupg(){
+  printf "\033[32m Checking if GNUPG is installed\033[0m\n"
+    echo "-----------------------------------------"
+    GNUPG=$(which gpg)
+    if [ $GNUPG >/dev/null ]; then
+        echo -n "GNUPG already Installed\n"
+        else
+        echo -e " Error: GNUPG is not installed. Installing\n"
+        apt -y install gnupg2
+    fi
+}
+
 
 #Check NGINX Packages
 check_nginx() {
-    echo -n "Checking if NGINX is installed \n"
+    printf "\033[32m Checking if NGINX is installed \033[0m\n"
     echo    "--------------------------------"
     NGINX=$(dpkg-query -W -f='${Status}' nginx 2>/dev/null | grep -c "ok installed")
     if [ $NGINX -eq 0 ] ; then
         echo "NGINX is not installed - Installing NGINX now - Please wait \n"
         apt install -y nginx
     else
-        echo "NGINX is installed "
+        echo "NGINX is already installed\n"
     fi
 }
 
 #check if java installed
 #ELK deployment requires that Java 8 or 11 is installed. Run the below commands to install OpenJDK 11
 check_java() {
-    clear
-    echo -n "checking if java is installed \n"
+    printf "\033[32m Checking if java is installed \033[0m\n"
     echo    "--------------------------------"
     JAVA=$(which java | wc -l)
-    JAVA_REQ=$(java -version 2> /tmp/version && awk '/version/ { gsub(/"/, "", $NF); print ( $NF < 1.8 ) ? "YES" : "NO" }' /tmp/version)
-    if [ $JAVA -eq 0 ] ; then
+    if [ $JAVA -eq 1 ];  then
+        printf "\033[34m Java Installed :)\n \034[0m "
+        java -version 2>&1 | awk -F '"' '/version/ {print $2}'
+        else
         #install java
-        echo "Installing Java 8 - Please wait "
+        echo "Installing Java - Please wait "
         echo "--------------------------------"
-        apt-get install -y python-software-properties wget curl software-properties-common apt-transport-https
-        echo deb http://http.debian.net/debian jessie-backports main >> /etc/apt/sources.list
-        apt-get update && apt-get install -t jessie-backports openjdk-8-jdk
-        #update-alternatives --config java
-        #Elasticsearch requires Java 8 or later
-        elif [ "$JAVA_REQ" = 'YES' ]; then
-        apt-get update && apt-get install -y openjdk-8-jdk
-    fi
+        echo deb http://http.debian.net/debian $VERSION-backports main >> /etc/apt/sources.list
+        apt update && apt install -t $VERSION-backports openjdk-11-jdk
+        fi
 }
 
 #Install and Configure Elasticsearch
