@@ -155,17 +155,9 @@ install_kibana() {
     fi
 }
 
-
-
-#Create nginx config file for kibana
-#Please edit ServerName and ServerAdmin
-
-
-#Install and Configure Logstash#Create nginx config file for kibana(OPTIONAL)
-#Please edit ServerName and ServerAdmin
 configure_kibana_auth() {
     printf "\033[32m ---- Configuring Kibana ---- \033[0m\n"
-    admpwd="password" #password for basic auth - change this
+    admpwd="password"
     #touch /etc/nginx/htpasswd.users
     echo "---- configuring password for kibana nginx  for basic security ----\n"
     echo "admin:$(openssl passwd -apr1 $admpwd)" | tee -a /etc/nginx/.htpasswd.users
@@ -189,6 +181,7 @@ server {
  }
 EOF
         ln -s /etc/nginx/sites-available/kibana /etc/nginx/sites-enabled/
+        mv /etc/nginx/sites-avaliable/default /tmp
         #check if KIBANA port is active
         KBSVC='kibana'
         if ps ax | grep -v grep | grep $KBSVC > /dev/null ; then
@@ -199,6 +192,8 @@ EOF
         fi
         service nginx reload
 }
+
+
 
 install_logstash() {
     #install pacjage
@@ -239,8 +234,8 @@ update_system_packages
 check_nginx
 check_java
 install_elasticsearch
-configure_elasticsearch #parei aqui
+configure_elasticsearch 
 install_kibana
-configure_kibana
+configure_kibana_auth
 install_logstash
 test_elasticsearch_port
