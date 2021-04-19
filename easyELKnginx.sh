@@ -76,32 +76,20 @@ check_java() {
 
 #Install and Configure Elasticsearch
 install_elasticsearch() {
-    clear
-    echo -n "Installing elasticsearch \n"
-    echo    "---------------------------"
+    printf "\033[32m Install Elasticsearch \033[0m\n"
+    echo    "-----------------------------"
     #import PGP key
-    echo "$(tput setaf 1) ---- Setting up public signing key ----"
+    printf "\033[32m---- Setting up public signing key ---- \033[0m\n"
     wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
     #update apt sources list
-    echo "$(tput setaf 1) ---- Saving Repository Definition to /etc/apt/sources/list.d/elastic-7.x.list ----"
-    echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list
-    echo "$(tput setaf 1) ---- Installing the Elasticsearch Debian Package ----"
+    printf "\033[32m ---- Saving Repository Definition to /etc/apt/sources/list.d/elastic-7.x.list ---- \033[0m\n"
+    echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
+    printf "\033[32m---- Installing the Elasticsearch Debian Package ----\033[0m\n"
     apt-get update && apt-get install -y elasticsearch
-    #Elasticsearch is not started automatically after installation
-    echo -n "Updating start daemon \n"
-    echo    "---------------------------"
-    CMD=$(command -v systemctl)
-    if [ $CMD > /dev/null ] ; then
-        systemctl daemon-reload
-        systemctl enable elasticsearch.service
-    else
-        update-rc.d elasticsearch defaults 95 10
-    fi
 }
 
 configure_elasticsearch() {
-    clear
-    echo -n "Configuring elasticsearch \n"
+    printf "\033[32m Configuring elasticsearch \033[0m\n"
     echo    "---------------------------"
     cd /etc/elasticsearch/ || exit
     #bootstrap.memory_lock: true
@@ -114,7 +102,7 @@ configure_elasticsearch() {
     sed -i '/LimitMEMLOCK=/s/^#//g' /usr/lib/systemd/system/elasticsearch.service
     #MAX_LOCKED_MEMORY=unlimited
     sed -i '/MAX_LOCKED_MEMORY=/s/^#//g' /etc/default/elasticsearch
-    echo "$(tput setaf 1) ---- starting elasticsearch ----"
+    printf "\033[0m\n---- starting elasticsearch ----\033[0m\n"
     #start service
     CMD=$(command -v systemctl)
     if [ $CMD > /dev/null ] ; then
@@ -126,12 +114,12 @@ configure_elasticsearch() {
     fi
     sleep 60
     #check if service is running
-    echo "$(tput setaf 1) ---- check if elasticsearch is running ----"
+    printf " ---- check if elasticsearch is running ----"
     SVC='elasticsearch'
     if ps ax | grep -v grep | grep $SVC > /dev/null ; then
-        echo "Elasticsearch service is running"
+        echo "\033[32m-----Elasticsearch service is running----\033[0m\n"
     else
-        echo "Elasticsearch Server is stopped - please check your installation"
+        echo "\033[31m----Elasticsearch Server is stopped - please check your installation----\033[0m\n"
         exit 1
     fi
 }
@@ -139,13 +127,12 @@ configure_elasticsearch() {
 #Install and Configure Kibana with NGINX
 install_kibana() {
     clear
-    echo -n "Installing kibana \n"
-    echo    "---------------------------"
+    printf "\033[32m ---- Installing kibana ---- \033[0m\n"
     #get eth IP
     IP=$(ip addr show |grep "inet " |grep -v 127.0.0. |head -1|cut -d" " -f6|cut -d/ -f1)
     #install package
     apt-get install -y kibana
-    echo "$(tput setaf 1) ---- Setting up public signing key ----"
+    printf "\033[32m  ---- Setting up public signing key ----\033[0m\n"
     cd /etc/kibana || exit
     #server.port: 5601
     sed -i "/server.port:/s/^#//g" /etc/kibana/kibana.yml
@@ -155,8 +142,7 @@ install_kibana() {
     #Elastic url
     sed -i '/elasticsearch.url:/s/^#//g' /etc/kibana/kibana.yml
     #start kibana
-    echo -n "Updating start daemon Kibana \n"
-    echo    "---------------------------"
+    printf "\033[32m ---- Updating start daemon Kibana ---- \033[0m\n"
     CMD=$(command -v systemctl)
     if [ $CMD > /dev/null ] ; then
         systemctl daemon-reload
@@ -165,8 +151,8 @@ install_kibana() {
         update-rc.d kibana defaults 95 10
         service kibana start
     fi
-         
 }
+
 
 
 #Create nginx config file for kibana
