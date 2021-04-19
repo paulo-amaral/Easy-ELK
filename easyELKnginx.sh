@@ -141,6 +141,8 @@ install_kibana() {
     sed -i "/server.host/aserver.host: ${IP}"  /etc/kibana/kibana.yml
     #Elastic url
     sed -i '/elasticsearch.url:/s/^#//g' /etc/kibana/kibana.yml
+    #locale
+    sed -i "i18n.locale:/s/^#//g" /etc/kibana/kibana.yml
     #start kibana
     printf "\033[32m ---- Updating start daemon Kibana ---- \033[0m\n"
     CMD=$(command -v systemctl)
