@@ -159,46 +159,47 @@ install_kibana() {
 
 #Create nginx config file for kibana
 #Please edit ServerName and ServerAdmin
-configure_kibana() {
-    clear
-    echo -n "Configuring Kibana \n"
-    echo    "---------------------------"
-    echo "admin:$(openssl passwd -apr1)" | tee -a /etc/nginx/htpasswd.users
-        # echo -e "You need to set a username and password to login."
-        # read -p "Please enter a username : " user
-        # htpasswd -c /etc/nginx/conf.d/kibana.htpasswd $user
+
+
+#Install and Configure Logstash#Create nginx config file for kibana(OPTIONAL)
+#Please edit ServerName and ServerAdmin
+configure_kibana_auth() {
+    printf "\033[32m ---- Configuring Kibana ---- \033[0m\n"
+    admpwd="password" #password for basic auth - change this
+    #touch /etc/nginx/htpasswd.users
+    echo "---- configuring password for kibana nginx  for basic security ----\n"
+    echo "admin:$(openssl passwd -apr1 $admpwd)" | tee -a /etc/nginx/.htpasswd.users
 touch /etc/nginx/sites-available/kibana
 cat > /etc/nginx/sites-available/kibana <<\EOF
 server {
      listen 80;
      server_name $HOSTNAME;
      auth_basic "Kibana";
-     auth_basic_user_file /etc/nginx/htpasswd.users;
+     auth_basic_user_file /etc/nginx/.htpasswd.users;
      error_log   /var/log/nginx/kibana.error.log;
      access_log  /var/log/nginx/kibana.access.log;
      location / {
-        proxy_pass http://127.0.0.1:5601;
+        proxy_pass http://$IP:5601;
         rewrite ^/(.*) /$1 break;
         proxy_ignore_client_abort on;
         proxy_set_header  X-Real-IP  $remote_addr;
         proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header  Host $http_host;
-     }
+               }
  }
 EOF
-ln -s /etc/nginx/sites-available/kibana /etc/nginx/sites-enabled/
+        ln -s /etc/nginx/sites-available/kibana /etc/nginx/sites-enabled/
         #check if KIBANA port is active
         KBSVC='kibana'
         if ps ax | grep -v grep | grep $KBSVC > /dev/null ; then
-            echo "Kibana service is running \n"
+            printf "\033[0m\n ---- Kibana service is running --- \033[0m\n"
         else
-            echo "Kibana Server is stopped - please check your installation"
-            exit 1  
+            printf "\033[31m ---- Kibana Server is stopped - please check your installation \033[0m\n ---- "
+            exit 1
         fi
         service nginx reload
 }
 
-#Install and Configure Logstash
 install_logstash() {
     #install pacjage
     apt-get install -y logstash
