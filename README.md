@@ -10,8 +10,9 @@ Bash script to install Elastic Stack on Debian and Ubuntu.
 - Other OS flavors like RedHat, Centos, OpenSuSE require rpms and those are not supported with this script
 
 ## Clone
+```
 git clone https://github.com/paulo-amaral/Shell-Script-to-install-ELK---Debian-and-Ubuntu
-
+```
 ## Set permission
 ```
 chmod +x easyELKnginx.sh 
