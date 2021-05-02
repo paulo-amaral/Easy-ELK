@@ -9,6 +9,17 @@ Bash script to install Elastic Stack on Debian and Ubuntu.
 - System must be Debian-based / Ubuntu.  
 - Other OS flavors like RedHat, Centos, OpenSuSE require rpms and those are not supported with this script
 
+### Clone
+git clone 
+
+### Set permission
+chmod +x 
+
+## Run
+sh 
+
+
+
 
 
 
