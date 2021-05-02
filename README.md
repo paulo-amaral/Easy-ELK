@@ -11,7 +11,7 @@ Bash script to install Elastic Stack on Debian and Ubuntu.
 
 ## Clone
 ```
-git clone https://github.com/paulo-amaral/Shell-Script-to-install-ELK---Debian-and-Ubuntu
+git clone https://github.com/paulo-amaral/Easy-ELK
 ```
 ## Set permission
 ```
