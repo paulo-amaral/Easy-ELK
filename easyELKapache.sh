@@ -3,6 +3,9 @@
 #This script is used to install ELK STACK and map database GeoLite2
 #Elasticsearch requires Java 8 or later. Use the official Oracle distribution or an open-source distribution such as OpenJDK.
 #Author : Paulo Amaral 
+## Changelog ##
+# 1- ALERT OF GEOMAP DOWNLOAD - url which no longer works and needs a license key obviously now! 
+#    the databse is archived >> check https://forum.matomo.org/t/maxmind-is-changing-access-to-free-geolite2-databases/35439/2
 
 
 #Get domain name
@@ -223,7 +226,7 @@ install_logstash() {
     systemctl enable logstash.service
     #install geolocation data for maps
     cd /etc/logstash || exit
-    curl -O "http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz"
+    curl -O "https://web.archive.org/web/20191227182209/https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz"
     gunzip GeoLite2-City.mmdb.gz
 }
 
