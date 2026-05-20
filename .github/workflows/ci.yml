@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate shell syntax
+        run: |
+          bash -n \
+            easyELKapache.sh \
+            easyELKnginx.sh \
+            scripts/elastic_version.sh \
+            scripts/install.sh \
+            scripts/install_docker.sh \
+            scripts/install_elk.sh \
+            scripts/install_macos.sh
+
+      - name: Validate Docker Compose
+        run: docker compose -f docker/compose.yml config
+
+      - name: Validate Vagrantfile Ruby syntax
+        run: ruby -c sandbox/Vagrantfile

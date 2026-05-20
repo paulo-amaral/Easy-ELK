@@ -1,5 +1,13 @@
 ![Easy-ELK](https://socialify.git.ci/paulo-amaral/Easy-ELK/image?description=1&font=KoHo&forks=1&issues=1&language=1&owner=1&pattern=Charlie%20Brown&pulls=1&stargazers=1&theme=Light)
 
+[![Debian](https://img.shields.io/badge/Debian-supported-A81D33?logo=debian&logoColor=white)](#option-2-install-on-linux-standalone)
+[![Ubuntu](https://img.shields.io/badge/Ubuntu-supported-E95420?logo=ubuntu&logoColor=white)](#option-2-install-on-linux-standalone)
+[![RHEL](https://img.shields.io/badge/RHEL%20%2F%20Rocky%20%2F%20Alma-supported-EE0000?logo=redhat&logoColor=white)](#option-2-install-on-linux-standalone)
+[![Fedora](https://img.shields.io/badge/Fedora-supported-51A2DA?logo=fedora&logoColor=white)](#option-2-install-on-linux-standalone)
+[![openSUSE](https://img.shields.io/badge/openSUSE-supported-73BA25?logo=opensuse&logoColor=white)](#option-2-install-on-linux-standalone)
+[![macOS](https://img.shields.io/badge/macOS-supported-000000?logo=apple&logoColor=white)](#option-3-install-on-macos)
+[![Docker](https://img.shields.io/badge/Docker-test%20stack-2496ED?logo=docker&logoColor=white)](#option-1-test-locally-with-docker)
+
 # Easy-ELK
 
 Easy-ELK helps you install or test a single-node Elastic Stack:
@@ -8,6 +16,8 @@ Easy-ELK helps you install or test a single-node Elastic Stack:
 - Kibana
 - Logstash
 - Nginx or Apache reverse proxy for standalone Linux installs
+
+Supports Debian, Ubuntu, RHEL-like distros, Fedora, Rocky Linux, AlmaLinux, Oracle Linux, Amazon Linux, SUSE/openSUSE, macOS, and Docker-based local testing.
 
 The project has two goals:
 
@@ -308,9 +318,12 @@ vagrant up
 | `scripts/install_docker.sh` | Docker Compose installer |
 | `docker/compose.yml` | Local Docker test stack |
 | `sandbox/Vagrantfile` | Linux VM sandbox |
+| `.env.example` | Optional local configuration example |
+| `SECURITY.md` | Security notes and reporting guidance |
 
 ## Notes
 
 - Security is disabled by default for local and sandbox simplicity.
 - Review TLS, authentication, firewall rules, and passwords before adapting this for production.
 - Elasticsearch can be memory hungry. Use at least 4 GB RAM for VM tests.
+- Do not commit `.env`, private keys, certificates, logs, package downloads, or local Elastic data.

@@ -1,0 +1,54 @@
+# Easy-ELK local installs
+.easy-elk/
+easy-elk/
+downloads/
+logs/
+pids/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.truststore
+*.htpasswd
+*htpasswd*
+
+# Elastic data and runtime output
+data/
+elasticsearch-data/
+*.log
+*.pid
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.deb
+*.rpm
+
+# Docker / Compose local overrides
+docker-compose.override.yml
+compose.override.yml
+
+# Vagrant sandbox
+.vagrant/
+sandbox/.vagrant/
+
+# macOS / editor files
+.DS_Store
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Test/cache files
+.cache/
+tmp/
+coverage/
