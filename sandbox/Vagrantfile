@@ -1,0 +1,22 @@
+Vagrant.configure("2") do |config|
+  proxy_script = ENV.fetch("EASY_ELK_PROXY_SCRIPT", "easyELKnginx.sh")
+
+  config.vm.box = ENV.fetch("EASY_ELK_BOX", "ubuntu/noble64")
+  config.vm.hostname = "easy-elk-sandbox"
+  config.vm.synced_folder "..", "/vagrant"
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 9200, host: 9200
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "easy-elk-sandbox"
+    vb.memory = 4096
+    vb.cpus = 2
+  end
+
+  config.vm.provision "shell", privileged: true, inline: <<-SHELL
+    set -e
+    cd /vagrant
+    chmod +x easyELKnginx.sh easyELKapache.sh scripts/install_elk.sh
+    ELASTIC_MAJOR="${ELASTIC_MAJOR:-9}" KIBANA_PASSWORD="${KIBANA_PASSWORD:-easyelk}" ./#{proxy_script}
+  SHELL
+end
